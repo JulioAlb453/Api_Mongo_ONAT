@@ -10,11 +10,12 @@ exports.getEvents = async (req, res) => {
   try {
     const db = getDB();
     const event = await db.collection(collection_name).find().toArray();
-    res.json(event);
+    res.status(200).json(event);
   } catch (err) {
     res.status(500).json({ message: err.message });
   }
 };
+
 exports.createEvent = async (req, res) => {
     const newEvent = {
       nombreEvento: req.body.nombreEvento,

@@ -9,33 +9,19 @@ dotenv.config();
 const JWT_SECRET = process.env.JWT_SECRET;
 const collection_name = "Usuarios";
 
-const authenticateToken = (req, res, next) => {
-  try {
-    const token =
-      req.headers["authorization"] &&
-      req.headers["authorization"].split(" ")[1];
-    if (!token) return res.sendStatus(401);
-    jwt.verify(token, JWT_SECRET, (err, user) => {
-      if (err) {
-        return res.sendStatus(403);
-      }
-      res.user = user;
-      res.json(user);
-      next();
-    });
-  } catch (err) {
-    res.status(500).json({ message: err.message });
-  }
-};
-exports.getUsers = async (req, res) => {
-  try {
-    const db = getDB();
-    const users = await db.collection(collection_name).find().toArray();
-    res.json(users);
-  } catch (err) {
-    res.status(500).json({ message: err.message });
-  }
-};
+
+exports.getUsers = 
+  async (req, res) => {
+    try {
+      const db = getDB();
+      const users = await db.collection(collection_name).find().toArray();
+      res.json(users);
+    } catch (err) {
+      res.status(500).json({ message: err.message });
+    }
+  };
+
+
 exports.createUser = async (req, res) => {
   const newUser = {
     name: req.body.name,
@@ -49,11 +35,13 @@ exports.createUser = async (req, res) => {
     console.log(newUser);
     const db = getDB();
     const result = await db.collection(collection_name).insertOne(newUser);
-    //const token = jwt.sign({ userId: result.insertedId }, JWT_SECRET, { expiresIn: '1h' });
+    const token = jwt.sign({ userId: result.insertedId }, JWT_SECRET, {
+      expiresIn: "1h",
+    });
     res.status(201).json({
       message: "Usuario creado exitosamente",
       userId: result.insertedId,
-      //token: token
+      token: token,
     });
   } catch (err) {
     res.status(400).json({ message: err.message });
@@ -88,6 +76,7 @@ exports.loginUser = async (req, res) => {
     res.status(500).json({ message: err.message });
   }
 };
+
 exports.getUserById = async (req, res) => {
   const userId = req.params.id;
   if (!ObjectId.isValid(userId)) {
@@ -126,4 +115,3 @@ exports.deleteUser = async (req, res) => {
 };
 
 
-module.exports.authenticateToken = authenticateToken;
