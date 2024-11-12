@@ -76,7 +76,7 @@ exports.deleteEvent = async (req, res) => {
   }
 };
 
-exports.updateProduct = async(req,res) =>{
+exports.updateEvent = async(req,res) =>{
   const eventId = res.params.id;
 
   if(!ObjectId.isValid(eventId)){
