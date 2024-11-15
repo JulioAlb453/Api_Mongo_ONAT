@@ -1,21 +1,30 @@
-const jwt = require('jsonwebtoken');
-const { JWT_SECRET } = process.env;
+const axios = require('axios');
+const { API_PYTHON_URL } = process.env; // Asumimos que la URL de la API de Python está en el archivo .env
 
-const authenticate = (req, res, next) => {
-  // Obtener el token del encabezado Authorization
+const authenticate = async (req, res, next) => {
   const token = req.header('Authorization') && req.header('Authorization').replace('Bearer ', '');
-  
+    
   if (!token) {
     return res.status(401).json({ message: 'Acceso denegado. No se proporcionó token.' });
   }
 
   try {
-    // Verificar el token
-    const decoded = jwt.verify(token, JWT_SECRET);
-    req.user = decoded;  // Decodificamos el token y lo almacenamos en req.user
-    next();  // El token es válido, continuamos con la ruta
+    // Hacer la petición al endpoint de validación de token en tu API de Python
+    const response = await axios.post(`${API_PYTHON_URL}/validar-token/`, {}, {
+      headers: {
+        'Authorization': `Bearer ${token}`
+      }
+    });
+
+    if (response.status === 200) {
+      // Si el token es válido, guardamos la información del usuario decodificada en req.user
+      // req.user = response.data; // Aquí asumes que tu API de Python devuelve la información del usuario
+      return next(); // Continuamos con la ruta
+    } else {
+      return res.status(400).json({ message: 'Token inválido o expirado.' });
+    }
   } catch (err) {
-    return res.status(400).json({ message: 'Token inválido o expirado.' });
+    return res.status(400).json({ message: 'Token inválido o expirado...' });
   }
 };
 
