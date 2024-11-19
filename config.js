@@ -1,4 +1,4 @@
-  const { Client } = require("pg");
+
 const dotenv = require("dotenv");
 const mongoose = require("mongoose");
 
@@ -7,7 +7,6 @@ dotenv.config();
 // const uri = process.env.MONGODB_URI;
 // const monogoClient = new MongoClient(uri, { useNewUrlParser: true, useUnifiedTopology: true });
 let db;
-
 
 
 const connectDB = async () => {

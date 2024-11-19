@@ -7,6 +7,7 @@ direccion: { type: String, required: true },
 horaInicio: { type: String, required: true },
 horaFinal: { type: String, required: true },
 descripcion: { type: String, required: true } ,
+idOrg: { type: String, required: true } ,
 }, {
   collection: 'events' 
 });

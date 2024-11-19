@@ -14,42 +14,40 @@ exports.getProducts = async (req, res) => {
 };
 exports.createProduct = async (req, res) => {
   try {
-    const { nombreProducto, cantidad, precio, tipo } = req.body;
+    const { nombreProducto, precioBase} = req.body;
 
     const newProduct = new Product({
       nombreProducto,
-      cantidad,
-      precio,
-      tipo,
+      precioBase,
     });
 
     const result = await newProduct.save();
+    console.log(result)
     res.status(200).json({
       message: "producto creado exitosamente",
-      product: result._id,
     });
   } catch (err) {
     res.status(500).json({ mesaage: err.message });
   }
 };
 
-exports.getProductById = async (req, res) => {
-  const productId = req.params.id;
+// exports.getProductById = async (req, res) => {
+//   const productId = req.params.id;
 
-  if (!mongoose.Types.ObjectId.isValid(productId)) {
-    res.status(400).json({ mesaage: "Id del producto no valido" });
-  }
+//   if (!mongoose.Types.ObjectId.isValid(productId)) {
+//     res.status(400).json({ mesaage: "Id del producto no valido" });
+//   }
 
-  try {
-    const product = await Product.findById(productId);
-    if (!product) {
-      res.status(404).json({ message: "evento no encontrado" });
-    }
-    res.json(product);
-  } catch (error) {
-    res.status(500).json({ message: err.mesaage });
-  }
-};
+//   try {
+//     const product = await Product.findById(productId);
+//     if (!product) {
+//       res.status(404).json({ message: "evento no encontrado" });
+//     }
+//     res.json(product);
+//   } catch (error) {
+//     res.status(500).json({ message: err.mesaage });
+//   }
+// };
 
 exports.deleteProduct = async (req, res) => {
   const productId = req.params.id;

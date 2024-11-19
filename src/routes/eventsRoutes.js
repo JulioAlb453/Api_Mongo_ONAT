@@ -8,6 +8,6 @@ router.post('/crearEvento',authenticate, eventsController.createEvent);
 router.get('/mostrarEventosPorID/:id',authenticate, eventsController.getEventById);
 router.delete('/eliminarEvento/:id',authenticate, eventsController.deleteEvent);
 router.put('/modificarEvento/:id', authenticate, eventsController.updateEvent)
-// router.
+router.get('/encontrarEventosPorOrg/:id', authenticate, eventsController.getEventsWithOrg)
 
 module.exports = router;
