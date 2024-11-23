@@ -12,6 +12,7 @@ exports.getProducts = async (req, res) => {
     res.status(500).json({ message: err.message });
   }
 };
+
 exports.createProduct = async (req, res) => {
   try {
     const { nombreProducto, precioBase} = req.body;
@@ -31,23 +32,7 @@ exports.createProduct = async (req, res) => {
   }
 };
 
-// exports.getProductById = async (req, res) => {
-//   const productId = req.params.id;
 
-//   if (!mongoose.Types.ObjectId.isValid(productId)) {
-//     res.status(400).json({ mesaage: "Id del producto no valido" });
-//   }
-
-//   try {
-//     const product = await Product.findById(productId);
-//     if (!product) {
-//       res.status(404).json({ message: "evento no encontrado" });
-//     }
-//     res.json(product);
-//   } catch (error) {
-//     res.status(500).json({ message: err.mesaage });
-//   }
-// };
 
 exports.deleteProduct = async (req, res) => {
   const productId = req.params.id;

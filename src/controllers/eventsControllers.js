@@ -1,6 +1,6 @@
 const mongoose = require("mongoose");
 const dotenv = require("dotenv");
-const Evento = require("../models/eventModel"); // Asegúrate de que este archivo exporte tu esquema de Mongoose
+const Evento = require("../models/eventModel"); 
 const { Client } = require("pg");
 dotenv.config();
 
@@ -12,7 +12,6 @@ const pgClient = new Client({
   port: process.env.PG_PORT,
 });
 
-// Conectar al cliente de PostgreSQL
 pgClient
   .connect()
   .then(() => console.log("Conectado a la base de datos de PostgreSQL"))
@@ -47,6 +46,7 @@ exports.createEvent = async (req, res) => {
       descripcion,
       idOrg,
     });
+    console.log(newEvent.idOrg)
     const result = await newEvent.save();
     res.status(201).json({
       message: "evento creado exitosamente",

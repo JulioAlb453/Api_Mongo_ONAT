@@ -5,8 +5,7 @@ const authenticate = require('../middleware/authMiddleware');
 
 router.get('/:id',authenticate, postsControllers.getPostsByOrganizationId);
 router.post('/',authenticate, postsControllers.createPost);
-// router.get('/:id',authenticate, postsControllers);
-// router.delete('/:id',authenticate, postsControllers);
- 
+router.put('/:id',authenticate, postsControllers.updatePost)
+router.delete('/:id', authenticate, postsControllers.deletePost)
 
 module.exports = router;
