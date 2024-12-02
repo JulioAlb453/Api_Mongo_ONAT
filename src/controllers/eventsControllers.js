@@ -1,6 +1,7 @@
 const mongoose = require("mongoose");
 const dotenv = require("dotenv");
 const Evento = require("../models/eventModel"); 
+const post = require("../models/postModel");
 const { Client } = require("pg");
 dotenv.config();
 
@@ -10,6 +11,9 @@ const pgClient = new Client({
   database: process.env.PG_DATABASE,
   password: process.env.PG_PASSWORD,
   port: process.env.PG_PORT,
+  // ssl: {
+  //   rejectUnauthorized: false, // Asegúrate de usar el certificado adecuado
+  // },
 });
 
 pgClient
@@ -36,6 +40,8 @@ exports.createEvent = async (req, res) => {
       descripcion,
       direccion,
       idOrg,
+      // orgId,
+      dataProductos,
     } = req.body;
     const newEvent = new Evento({
       nombreEvento,
@@ -46,11 +52,28 @@ exports.createEvent = async (req, res) => {
       descripcion,
       idOrg,
     });
-    console.log(newEvent.idOrg)
     const result = await newEvent.save();
+
+    const dataProductosObjectIds = dataProductos.map((producto) => ({
+      productoId: new mongoose.Types.ObjectId(producto.idProducto),
+      nombreProducto: producto.nombreProducto,
+      precioBase: producto.precioBase,
+      cantidad: producto.cantidad,
+    }));
+    const newPost = new post({
+      producto: dataProductosObjectIds,
+      orgId: idOrg,
+      eventId : result._id,
+    });
+
+    const resultNewPost = await newPost.save();
+    const populatedPost = await post.findById(resultNewPost._id).populate("producto");
+    // console.log(result)
+
     res.status(201).json({
       message: "evento creado exitosamente",
       eventId: result._id,
+      post: populatedPost,
     });
   } catch (err) {
     console.log(err);
@@ -59,7 +82,7 @@ exports.createEvent = async (req, res) => {
 };
 
 exports.getEventById = async (req, res) => {
-  const eventId = req.params.id;
+  const eventId = req.params._id;
   if (!mongoose.Types.ObjectId.isValid(eventId)) {
     return res.status(400).json({ message: "ID de evento no válido" });
   }
@@ -72,6 +95,7 @@ exports.getEventById = async (req, res) => {
     res.json(event);
   } catch (err) {
     res.status(500).json({ message: err.message });
+    console.log(err)
   }
 };
 

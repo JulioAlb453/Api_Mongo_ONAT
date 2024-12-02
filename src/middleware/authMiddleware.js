@@ -8,7 +8,7 @@ const authenticate = async (req, res, next) => {
   }
 
   try {
-    const response = await axios.post(`${API_PYTHON_URL}/validar-token/`, {}, {
+    const response = await axios.post(`${API_PYTHON_URL}/organizaciones/validar-token/`, {}, {
       headers: {
         'Authorization': `Bearer ${token}`
       }
