@@ -74,29 +74,37 @@ exports.createPost = async (req, res) => {
 
 exports.obtenerPostPorId = async (req, res) => {
   const eventId = new mongoose.Types.ObjectId(req.params._id);
+
   try {
     if (!eventId) {
       return res
         .status(400)
-        .json({ mensssage: "Id del post no es valido o esta ausente" });
+        .json({ message: "Id del evento no es válido o está ausente" });
     }
 
-    const posts = await post.find({ eventId: eventId }).populate("producto");
-    if (posts === 0) {
+    // Realizamos populate en el productoId
+    const posts = await post.find({ eventId: eventId }).populate({
+      path: "producto.productoId", // Especifica la referencia en el subdocumento
+      model: "products", // Modelo que corresponde a los productos
+    });
+
+    if (!posts.length) {
       return res
         .status(404)
         .json({ message: "No se encontraron productos para este post" });
     }
 
+    // Respuesta exitosa
     res.status(200).json({
       message: "Posts encontrados",
       posts,
     });
   } catch (err) {
-    console.log(err);
-    res.status(500).json({ message: err.message });
+    console.error(err);
+    res.status(500).json({ message: "Error al obtener el post" });
   }
 };
+
 
 exports.getPostsByOrganizationId = async (req, res) => {
   const orgId = req.params._id;
